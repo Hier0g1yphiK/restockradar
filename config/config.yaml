@@ -1,0 +1,83 @@
+﻿# Northern Card Gaming MVP configuration (Req 22).
+#
+# Loaded into SQLite on startup by the Config_Loader. All entities here are
+# source=config and are owned by this file (the loader never touches source=bot rows).
+# Secrets never live here: a destination names the ENV VAR that holds its webhook URL
+# (Req 18.2); the URL itself is read from .env at run time.
+#
+# Handles are the exact, full handles taken from the saved NCG feed fixtures.
+
+games:
+  - id: pokemon
+    name: "Pokemon TCG"
+
+products:
+  # Three real products chosen from the captured feed fixtures (task 10).
+  - id: team-rocket-tin
+    game: pokemon
+    name: "Pokemon TCG: Team Rocket Tin (Pre-Order)"
+    category: "Scarlet & Violet"
+  - id: destined-rivals-booster-box
+    game: pokemon
+    name: "Pokemon - Destined Rivals Booster Box"
+    category: "Scarlet & Violet"
+  - id: pokeween-18-october
+    game: pokemon
+    name: "NCG: Pokeween TCG Event (18th October)"
+    category: "Events"
+
+retailers:
+  - id: ncg
+    name: "Northern Card Gaming"
+    adapter_type: shopify
+    base_url: "https://www.northerncardgaming.com"
+    poll_interval_s: 60          # default inherited by this retailer's feeds and listings
+    minor_unit_exponent: 2       # Shopify .js prices are integer pence -> major units
+
+listings:
+  # Each listing is a product+retailer association; url/handle are the exact full handle
+  # from the saved feed JSON (not truncated). config_key is the stable upsert identity.
+  - config_key: ncg-team-rocket-tin
+    product: team-rocket-tin
+    retailer: ncg
+    url: "https://www.northerncardgaming.com/products/pokemon-tcg-team-rocket-tin-pre-order"
+    handle: pokemon-tcg-team-rocket-tin-pre-order
+  - config_key: ncg-destined-rivals-booster-box
+    product: destined-rivals-booster-box
+    retailer: ncg
+    url: "https://www.northerncardgaming.com/products/pokemon-destined-rivals-booster-box"
+    handle: pokemon-destined-rivals-booster-box
+  - config_key: ncg-pokeween-18-october
+    product: pokeween-18-october
+    retailer: ncg
+    url: "https://www.northerncardgaming.com/products/ncg-pokeween-18-october"
+    handle: ncg-pokeween-18-october
+
+discovery_feeds:
+  # The two MVP discovery feeds. The pokemon collection seeds the configurable exclude
+  # keywords; the pre-orders feed additionally requires an include keyword (Req 12.2).
+  - config_key: ncg-pokemon
+    retailer: ncg
+    game: pokemon
+    feed_url: "/collections/pokemon/products.json"
+    exclude_keywords: ["plush", "playmat", "sleeves", "binder"]
+  - config_key: ncg-pre-orders-1
+    retailer: ncg
+    game: pokemon
+    feed_url: "/collections/pre-orders-1/products.json"
+    include_keywords: ["pokemon"]
+    exclude_keywords: ["plush", "playmat", "sleeves", "binder"]
+
+destinations:
+  # One product destination (receives Pokemon product alerts) and one admin destination
+  # (receives operational warnings; no game required). Webhook URLs are referenced by
+  # env-var NAME only and resolved from .env at run time (Req 18.2).
+  - id: pokemon-alerts
+    server_id: "000000000000000001"
+    game: pokemon
+    webhook_env_var: RR_WEBHOOK_POKEMON
+    role_to_ping: "000000000000000002"
+  - id: admin-alerts
+    server_id: "000000000000000001"
+    admin: true
+    webhook_env_var: RR_WEBHOOK_ADMIN

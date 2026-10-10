@@ -1,0 +1,152 @@
+{
+  "pbtResults": {
+    "8.3 Write property test: exclude keywords take precedence over include": {
+      "status": "passed",
+      "lastRunTimestamp": 1791636659926
+    }
+  },
+  "executionHistory": {
+    "1. Project scaffold and tooling": [
+      {
+        "executionId": "5b4ee10c-ab72-4a59-b9f7-b07245fef31c",
+        "chatSessionId": "sess_42e0f870-14dc-455a-9e41-d0b44a444ee1",
+        "timestamp": 1791633430361
+      },
+      {
+        "executionId": "5b4ee10c-ab72-4a59-b9f7-b07245fef31c",
+        "chatSessionId": "sess_42e0f870-14dc-455a-9e41-d0b44a444ee1",
+        "timestamp": 1791635966170
+      }
+    ],
+    "2. Process settings and environment": [
+      {
+        "executionId": "5b4ee10c-ab72-4a59-b9f7-b07245fef31c",
+        "chatSessionId": "sess_42e0f870-14dc-455a-9e41-d0b44a444ee1",
+        "timestamp": 1791635971377
+      },
+      {
+        "executionId": "5b4ee10c-ab72-4a59-b9f7-b07245fef31c",
+        "chatSessionId": "sess_42e0f870-14dc-455a-9e41-d0b44a444ee1",
+        "timestamp": 1791636325229
+      }
+    ],
+    "3. In-memory heartbeat registry": [
+      {
+        "executionId": "5b4ee10c-ab72-4a59-b9f7-b07245fef31c",
+        "chatSessionId": "sess_42e0f870-14dc-455a-9e41-d0b44a444ee1",
+        "timestamp": 1791635972815
+      },
+      {
+        "executionId": "5b4ee10c-ab72-4a59-b9f7-b07245fef31c",
+        "chatSessionId": "sess_42e0f870-14dc-455a-9e41-d0b44a444ee1",
+        "timestamp": 1791636326149
+      }
+    ],
+    "4. Persistence foundation: type adapters and DB executor": [
+      {
+        "executionId": "5b4ee10c-ab72-4a59-b9f7-b07245fef31c",
+        "chatSessionId": "sess_42e0f870-14dc-455a-9e41-d0b44a444ee1",
+        "timestamp": 1791635973520
+      },
+      {
+        "executionId": "5b4ee10c-ab72-4a59-b9f7-b07245fef31c",
+        "chatSessionId": "sess_42e0f870-14dc-455a-9e41-d0b44a444ee1",
+        "timestamp": 1791636327181
+      },
+      {
+        "executionId": "5b4ee10c-ab72-4a59-b9f7-b07245fef31c",
+        "chatSessionId": "sess_42e0f870-14dc-455a-9e41-d0b44a444ee1",
+        "timestamp": 1791638396860
+      },
+      {
+        "executionId": "5b4ee10c-ab72-4a59-b9f7-b07245fef31c",
+        "chatSessionId": "sess_42e0f870-14dc-455a-9e41-d0b44a444ee1",
+        "timestamp": 1791638557226
+      }
+    ],
+    "5. Schema migrations": [
+      {
+        "executionId": "5b4ee10c-ab72-4a59-b9f7-b07245fef31c",
+        "chatSessionId": "sess_42e0f870-14dc-455a-9e41-d0b44a444ee1",
+        "timestamp": 1791636338204
+      },
+      {
+        "executionId": "5b4ee10c-ab72-4a59-b9f7-b07245fef31c",
+        "chatSessionId": "sess_42e0f870-14dc-455a-9e41-d0b44a444ee1",
+        "timestamp": 1791638370679
+      }
+    ],
+    "6. Domain models and key builders": [
+      {
+        "executionId": "5b4ee10c-ab72-4a59-b9f7-b07245fef31c",
+        "chatSessionId": "sess_42e0f870-14dc-455a-9e41-d0b44a444ee1",
+        "timestamp": 1791636339129
+      },
+      {
+        "executionId": "5b4ee10c-ab72-4a59-b9f7-b07245fef31c",
+        "chatSessionId": "sess_42e0f870-14dc-455a-9e41-d0b44a444ee1",
+        "timestamp": 1791638368562
+      },
+      {
+        "executionId": "5b4ee10c-ab72-4a59-b9f7-b07245fef31c",
+        "chatSessionId": "sess_42e0f870-14dc-455a-9e41-d0b44a444ee1",
+        "timestamp": 1791638500277
+      },
+      {
+        "executionId": "5b4ee10c-ab72-4a59-b9f7-b07245fef31c",
+        "chatSessionId": "sess_42e0f870-14dc-455a-9e41-d0b44a444ee1",
+        "timestamp": 1791638558224
+      }
+    ],
+    "8. Adapter interface, registry, errors, keyword matching": [
+      {
+        "executionId": "5b4ee10c-ab72-4a59-b9f7-b07245fef31c",
+        "chatSessionId": "sess_42e0f870-14dc-455a-9e41-d0b44a444ee1",
+        "timestamp": 1791636340054
+      },
+      {
+        "executionId": "5b4ee10c-ab72-4a59-b9f7-b07245fef31c",
+        "chatSessionId": "sess_42e0f870-14dc-455a-9e41-d0b44a444ee1",
+        "timestamp": 1791638369961
+      }
+    ],
+    "7. Config schema and loader": [
+      {
+        "executionId": "5b4ee10c-ab72-4a59-b9f7-b07245fef31c",
+        "chatSessionId": "sess_42e0f870-14dc-455a-9e41-d0b44a444ee1",
+        "timestamp": 1791638562852
+      },
+      {
+        "executionId": "5b4ee10c-ab72-4a59-b9f7-b07245fef31c",
+        "chatSessionId": "sess_42e0f870-14dc-455a-9e41-d0b44a444ee1",
+        "timestamp": 1791639041477
+      }
+    ],
+    "9. Polite HTTP client, host gate, robots.txt": [
+      {
+        "executionId": "5b4ee10c-ab72-4a59-b9f7-b07245fef31c",
+        "chatSessionId": "sess_42e0f870-14dc-455a-9e41-d0b44a444ee1",
+        "timestamp": 1791638563755
+      },
+      {
+        "executionId": "5b4ee10c-ab72-4a59-b9f7-b07245fef31c",
+        "chatSessionId": "sess_42e0f870-14dc-455a-9e41-d0b44a444ee1",
+        "timestamp": 1791639040767
+      }
+    ],
+    "12. Shopify_Adapter": [
+      {
+        "executionId": "5b4ee10c-ab72-4a59-b9f7-b07245fef31c",
+        "chatSessionId": "sess_42e0f870-14dc-455a-9e41-d0b44a444ee1",
+        "timestamp": 1791639047954
+      }
+    ],
+    "10. Manual NCG fixture-capture script (not part of the pytest suite)": [
+      {
+        "executionId": "1ad89869-f3d0-4c58-98c5-d72626808ee8",
+        "chatSessionId": "sess_42e0f870-14dc-455a-9e41-d0b44a444ee1",
+        "timestamp": 1791647075685
+      }
+    ]
+  }
+}

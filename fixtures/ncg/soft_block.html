@@ -1,0 +1,29 @@
+<!--
+  SYNTHETIC soft-block sample — HAND-WRITTEN, *NOT* captured from Northern Card Gaming.
+
+  This is a deliberately small, fabricated Cloudflare-style "Attention Required"
+  interstitial used purely as a test input for the soft-block adapter test
+  (Req 16.3 / Req 21.20): a 2xx HTML body served where a JSON feed was expected must be
+  classified as a SoftBlock. It contains NO real content from NCG and performs no
+  challenge logic — the markers below (e.g. "Attention Required! | Cloudflare",
+  "challenge-platform", "Just a moment...") are the strings the HttpClient's challenge
+  detector looks for. Do not treat this file as a captured fixture.
+-->
+<!doctype html>
+<html lang="en-US">
+<head>
+  <meta charset="utf-8" />
+  <meta name="robots" content="noindex,nofollow" />
+  <title>Attention Required! | Cloudflare</title>
+</head>
+<body>
+  <div id="cf-wrapper">
+    <h1>Just a moment...</h1>
+    <p>Please verify you are a human before continuing.</p>
+    <div class="cf-challenge" id="challenge-platform">
+      <noscript>Enable JavaScript and cookies to continue.</noscript>
+    </div>
+    <!-- synthetic marker only: /cdn-cgi/challenge-platform -->
+  </div>
+</body>
+</html>
