@@ -52,7 +52,7 @@ requirements as clearly-labelled Phase 2 / excluded work and have no tasks here.
     fixture, and a frozen/injectable monotonic+wall clock.
   - _Requirements: 19.1, 19.2, 19.3_
 
-  - [ ] 1.1 Write the no-network guard test
+  - [x] 1.1 Write the no-network guard test
     - Assert any real network attempt in the suite raises (guard is active for all tests).
     - _Requirements: 21.4_
 
@@ -63,7 +63,7 @@ requirements as clearly-labelled Phase 2 / excluded work and have no tasks here.
     14d, drain 120s, watchdog sched 120s / dispatch 60s / grace 120s).
   - _Requirements: 13.8, 18.1, 19.9, 20.7_
 
-  - [ ] 2.1 Write unit tests for settings defaults and env overrides
+  - [x] 2.1 Write unit tests for settings defaults and env overrides
     - Confirm defaults and that `RR_*` env vars override them.
     - _Requirements: 20.7_
 
@@ -75,48 +75,48 @@ requirements as clearly-labelled Phase 2 / excluded work and have no tasks here.
     code built in later milestones can beat them.
   - _Requirements: 19.7, 19.8, 19.9, 19.13_
 
-  - [ ] 3.1 Write unit tests for the in-memory heartbeat registry
+  - [x] 3.1 Write unit tests for the in-memory heartbeat registry
     - Setters update the monotonic values; getters read them back; no database access occurs.
     - _Requirements: 19.9, 19.13_
 
 - [x] 4. Persistence foundation: type adapters and DB executor
-  - [ ] 4.1 Implement `persistence/types.py`
+  - [x] 4.1 Implement `persistence/types.py`
     - Decimal↔TEXT (canonical Decimal string), bool↔INTEGER (0/1), datetime↔ISO-8601 UTC adapters.
     - _Requirements: 14.17, 14.20 (TEXT Decimal), 14.18 (UTC)_
 
-  - [ ] 4.2 Write unit tests for type adapters
+  - [x] 4.2 Write unit tests for type adapters
     - Round-trip Decimal/bool/datetime through TEXT/INTEGER forms.
     - _Requirements: 14.17, 14.18_
 
-  - [ ] 4.3 Implement `persistence/db.py` single-thread executor
+  - [x] 4.3 Implement `persistence/db.py` single-thread executor
     - One dedicated executor thread owning the sqlite3 connection; async wrappers that submit to it;
       PRAGMAs (WAL, busy_timeout, foreign_keys=ON, synchronous=NORMAL); a synchronous `BEGIN IMMEDIATE`
       context manager with no `await` inside the lock; a WAL-checkpoint(TRUNCATE) method.
     - _Requirements: 14.19, 14.16, 14.17_
 
 - [x] 5. Schema migrations
-  - [ ] 5.1 Author `migrations/0001_initial.sql`
+  - [x] 5.1 Author `migrations/0001_initial.sql`
     - All tables and indexes from the design DDL: schema_migrations, games, products, retailers,
       listings, discovery_feeds, seen_products, alerts_outbox, alert_deliveries, alert_state,
       alert_history, backoff_state, incidents, destinations, admin_notices, admin_scope_state,
       heartbeat; CHECK constraints, single non-null subject_key/scope_key keys, and hot-path indexes.
     - _Requirements: 14.1, 14.2, 14.3, 14.4, 14.5, 14.6, 14.7, 14.8, 14.9, 14.10, 14.11, 14.12, 14.13, 14.14, 14.15, 14.23, 6.1, 9.6_
 
-  - [ ] 5.2 Implement `persistence/migrate.py` runner
+  - [x] 5.2 Implement `persistence/migrate.py` runner
     - Forward-only, numbered files; `isolation_level=None`; take `BEGIN IMMEDIATE`, re-read max applied
       version under the lock; split each file with `sqlite3.complete_statement`; `execute()` each
       statement (never `executescript`); insert the version row in the same transaction; commit once.
       Idempotent and safe under concurrent starts.
     - _Requirements: 14.18 (versioned migrations)_
 
-  - [ ] 5.3 Write migration safety tests (fail-midway rollback + concurrent-start)
+  - [x] 5.3 Write migration safety tests (fail-midway rollback + concurrent-start)
     - A file whose second statement errors leaves neither its schema changes nor its version row, and a
       retry re-applies from the last committed version; two concurrent starts apply each migration
       exactly once (loser applies nothing under the held lock).
     - _Requirements: 14.18_
 
 - [x] 6. Domain models and key builders
-  - [ ] 6.1 Implement `domain/models.py` and `domain/ids.py`
+  - [x] 6.1 Implement `domain/models.py` and `domain/ids.py`
     - Frozen dataclasses: Game, Product, Retailer, Listing, DiscoveryFeed, Destination. Build
       `subject_key` (`listing:{id}`, `feed:{feed_id}:ext:{external_id}`) and `scope_key`
       (`retailer:{id}` | `feed:{id}` | `listing:{id}` | `path:{path}` | `destination:{id}` | `system`);
@@ -124,13 +124,13 @@ requirements as clearly-labelled Phase 2 / excluded work and have no tasks here.
     - _Requirements: 14.10, 14.12, 11.2 (shared types)_
 
 - [x] 7. Config schema and loader
-  - [ ] 7.1 Implement `config/schema.py` pydantic models
+  - [x] 7.1 Implement `config/schema.py` pydantic models
     - Models for games/products/retailers/listings/discovery_feeds/destinations matching the YAML
       schema; poll-interval floor at 30s; defaults (minor_unit_exponent 2, max_page_count 20,
       full-catalogue interval 900s); destination requires game unless admin.
     - _Requirements: 13.1, 15.1, 15.2, 11.5, 12.3, 12.6, 14.14, 22.13_
 
-  - [ ] 7.2 Implement `config/loader.py` Config_Loader
+  - [x] 7.2 Implement `config/loader.py` Config_Loader
     - Validate-all-then-upsert by stable id / `config_key`; fail fast reporting every error in one pass
       (unknown adapter type, destination referencing unknown game, unset referenced env var, YAML
       config_key colliding with a `source='bot'` row); upsert config rows only, never touch `bot` rows;
@@ -138,47 +138,47 @@ requirements as clearly-labelled Phase 2 / excluded work and have no tasks here.
       re-baseline; represent product+retailer as a listing; read secrets only from env.
     - _Requirements: 13.1, 13.2, 13.3, 13.4, 13.5, 13.6, 13.7, 13.8, 13.9, 18.1, 18.2_
 
-  - [ ] 7.3 Write config-validation fail-fast test
+  - [x] 7.3 Write config-validation fail-fast test
     - All errors reported in a single pass.
     - _Requirements: 21.13_
 
-  - [ ] 7.4 Write re-enable rebaseline test
+  - [x] 7.4 Write re-enable rebaseline test
     - Re-enabling a disabled entity clears `seeded_at` and re-baselines with no alert on next complete
       poll.
     - _Requirements: 21.22, 13.5, 2.2_
 
-  - [ ] 7.5 Write bot-row survival test
+  - [x] 7.5 Write bot-row survival test
     - Rows with `source='bot'` survive a config reload unchanged.
     - _Requirements: 21.23, 13.3_
 
 - [x] 8. Adapter interface, registry, errors, keyword matching
-  - [ ] 8.1 Implement `adapters/base.py`, `adapters/registry.py`, `adapters/errors.py`
+  - [x] 8.1 Implement `adapters/base.py`, `adapters/registry.py`, `adapters/errors.py`
     - Adapter Protocol (fetch_state, discover) and ProductState / DiscoveredProduct / VariantState /
       Existence; Adapter_Registry mapping adapter-type string → factory (register only `shopify`,
       resolve, raise UnknownAdapterType for unknown); error classes FetchError, Blocked, SoftBlock,
       MalformedResponse, TruncatedFeed (no NotFound — a 404 is a returned state).
     - _Requirements: 11.1, 11.2, 11.3, 11.9, 22.2_
 
-  - [ ] 8.2 Implement `adapters/keywords.py`
+  - [x] 8.2 Implement `adapters/keywords.py`
     - Unicode NFKD normalise + strip combining marks (accent-insensitive) + casefold; substring match
       over title/product_type/vendor/tags; exclude precedes include; empty-include means match-all.
     - _Requirements: 3.3, 3.4_
 
-  - [ ] 8.3 Write property test: exclude keywords take precedence over include
+  - [x] 8.3 Write property test: exclude keywords take precedence over include
     - **Property 3: Exclude keywords take precedence over include keywords**
     - **Validates: Requirements 3.3, 3.4**
 
-  - [ ] 8.4 Write keyword-matching unit test (Unicode/accent/case)
+  - [x] 8.4 Write keyword-matching unit test (Unicode/accent/case)
     - Matching is Unicode-normalised, accent-insensitive, case-insensitive.
     - _Requirements: 21.14_
 
 - [x] 9. Polite HTTP client, host gate, robots.txt
-  - [ ] 9.1 Implement `http/host_gate.py` and `http/robots.py`
+  - [x] 9.1 Implement `http/host_gate.py` and `http/robots.py`
     - Per-host one-in-flight lock + ≥1s spacing; robots.txt fetch+cache(24h), 4xx=allow,
       5xx/network=retry-later, path allow/deny.
     - _Requirements: 1.4, 15.5_
 
-  - [ ] 9.2 Implement `http/client.py`
+  - [x] 9.2 Implement `http/client.py`
     - httpx.AsyncClient wrapper: descriptive User-Agent, 30s per-request timeout, response
       classification (JSON vs HTML-where-JSON soft-block, 403/429/503-challenge Blocked, plain 5xx /
       timeout / network / malformed → FetchError), robots.txt enforcement on the request path, host-gate
@@ -189,7 +189,7 @@ requirements as clearly-labelled Phase 2 / excluded work and have no tasks here.
       using the in-memory heartbeat registry from task 3, consistent with Req 19.8/19.7.
     - _Requirements: 1.2, 15.4, 15.5, 16.1, 16.2, 16.3, 16.4, 19.7, 19.8_
 
-  - [ ] 9.3 Write soft-block detection test
+  - [x] 9.3 Write soft-block detection test
     - A 2xx HTML response where JSON was expected is treated as Blocked.
     - _Requirements: 21.20, 16.3_
 
@@ -203,7 +203,7 @@ requirements as clearly-labelled Phase 2 / excluded work and have no tasks here.
     diffing tests consume. MUST be built BEFORE the adapter/diffing fixture tests.
   - _Requirements: 22.8, 15.4, 15.5, 1.4, 21.3_
 
-- [ ] 11. Author `config/config.yaml` for Northern Card Gaming
+- [x] 11. Author `config/config.yaml` for Northern Card Gaming
   - Game `pokemon`; retailer NCG (shopify, `https://www.northerncardgaming.com`, 60s poll,
     minor_unit_exponent 2); the `/collections/pokemon/products.json` and
     `/collections/pre-orders-1/products.json` feeds with the exclude keywords (plush, playmat, sleeves,
@@ -214,7 +214,7 @@ requirements as clearly-labelled Phase 2 / excluded work and have no tasks here.
   - _Requirements: 12.1, 12.2, 22.1, 22.3, 22.7, 22.9, 22.10, 22.11, 22.12, 22.13_
 
 - [x] 12. Shopify_Adapter
-  - [ ] 12.1 Implement discovery (`shopify.py` discover)
+  - [x] 12.1 Implement discovery (`shopify.py` discover)
     - Paginate `/collections/{c}/products.json` and `/products.json` with `limit=250`, incrementing
       `page`; stop on short/empty page; raise TruncatedFeed at `max_page_count`; no `sort_by`/`+`-tags;
       build DiscoveredProduct with `external_id = str(id)` and normalised image. During pagination the
@@ -223,13 +223,13 @@ requirements as clearly-labelled Phase 2 / excluded work and have no tasks here.
       consistent with Req 19.7/19.8.
     - _Requirements: 11.10, 12.1, 12.3, 12.5, 12.6, 15.6, 22.3, 2.5, 19.7, 19.8_
 
-  - [ ] 12.2 Implement single-listing fetch (`shopify.py` fetch_state)
+  - [x] 12.2 Implement single-listing fetch (`shopify.py` fetch_state)
     - `GET /products/{handle}.js` (never `.json`); variants → VariantState; minor-unit→Decimal via
       `minor_unit_exponent`; feed decimal strings parsed as major units; price = lowest available else
       lowest overall; feed-reuse from this cycle's `cycle_products`.
     - _Requirements: 11.4, 11.5, 11.6, 4.2, 5.2, 22.5, 22.6_
 
-  - [ ] 12.3 Implement 404 / redirect / handle-rename resolution and image normalisation
+  - [x] 12.3 Implement 404 / redirect / handle-rename resolution and image normalisation
     - 404 returned as `ProductState(existence=NOT_FOUND)` (never raised); explicit same-host
       301/302/307/308 `.js`-suffix resolution requiring matching `external_id`; feed-based resolution of
       a plain 404 under a new handle; set `resolved_handle`/`resolved_url` only when the handle actually
@@ -237,37 +237,37 @@ requirements as clearly-labelled Phase 2 / excluded work and have no tasks here.
       learned `external_id` on the listing.
     - _Requirements: 7.1, 7.2, 11.7, 11.8, 8.11_
 
-  - [ ] 12.4 Write property test: price equality under normalisation yields no price-change event
+  - [x] 12.4 Write property test: price equality under normalisation yields no price-change event
     - **Property 5: Price equality under normalisation yields no price-change event**
     - **Validates: Requirements 5.1, 5.5, 11.5**
 
-  - [ ] 12.5 Write pagination-termination test
+  - [x] 12.5 Write pagination-termination test
     - Pagination stops on a short/empty page and respects configurable `max_page_count`.
     - _Requirements: 21.10, 12.6_
 
-  - [ ] 12.6 Write minor-units vs decimal-string parity test
+  - [x] 12.6 Write minor-units vs decimal-string parity test
     - `.js` minor-units and feed decimal string normalise to the same Decimal and produce no false
       price-change alert.
     - _Requirements: 21.21, 11.5_
 
-  - [ ] 12.7 Write image-URL normalisation test (fixture-driven)
+  - [x] 12.7 Write image-URL normalisation test (fixture-driven)
     - Protocol-relative → https, relative → urljoin'd, non-http(s) → None.
     - _Requirements: 8.11_
 
-  - [ ] 12.8 Write handle-rename / not-found ADAPTER tests (both redirect paths)
+  - [x] 12.8 Write handle-rename / not-found ADAPTER tests (both redirect paths)
     - Redirecting 404 (same-host `.js` id match) resolves; non-redirecting 404 resolves via feed;
       cross-host redirect, `.js` id mismatch, and plain 404 with no feed match fall through to
       NOT_FOUND; a resolved rename sets `resolved_*` only when the handle changed and performs NO DB
       write (the adapter only reports resolution; the watcher-level write is tested in M2).
     - _Requirements: 21.2, 21.3, 7.1, 11.8_
 
-- [ ] 34. Baseline write path (M1 task — numbered 34 to avoid renumbering)
+- [x] 34. Baseline write path (M1 task — numbered 34 to avoid renumbering)
   - This task lives in Milestone 1, physically placed between task 12 (Shopify_Adapter) and task 13 (app
     wiring), despite its out-of-sequence top-level number. It is numbered **34** (the first free
     top-level number) rather than 25, because top-level task 25 is already the M3 real-webhook
     checkpoint and reusing it would renumber/clobber an existing task. The out-of-sequence number is
     intentional and keeps every existing task number untouched.
-  - [ ] 34.1 Implement the baseline write path (minimal repository write used by the M1 dry-run `--once`)
+  - [x] 34.1 Implement the baseline write path (minimal repository write used by the M1 dry-run `--once`)
     - A narrow persistence write path that the M1 dry-run `--once` calls so Baseline_Seeding actually
       persists. Inside ONE synchronous `BEGIN IMMEDIATE` transaction via the DB executor (task 4.3), it
       performs the upserts Baseline_Seeding requires: write stored state (in_stock / price / existence as
@@ -279,15 +279,15 @@ requirements as clearly-labelled Phase 2 / excluded work and have no tasks here.
       state + alert_state + outbox + history + deliveries write-set).
     - _Requirements: 2.1, 2.2, 2.3, 6.1, 14.16_
 
-  - [ ] 34.2 Write property test: baseline seeding never alerts and seeds both alert_state rows
+  - [x] 34.2 Write property test: baseline seeding never alerts and seeds both alert_state rows
     - **Property 4: Baseline seeding never alerts and seeds both alert_state rows**
     - **Validates: Requirements 2.1, 2.2, 2.3**
     - Also includes the baseline-poll fixture coverage moved out of M2: a baseline poll over the captured
       fixtures writes stored state, both `alert_state` rows, and `seeded_at`, and emits zero alerts.
     - _Requirements: 21.24, 2.1, 2.2, 2.3_
 
-- [ ] 13. App wiring and baseline summary (dry-run `--once`)
-  - [ ] 13.1 Implement minimal `app.py` + `__main__.py` for `--once --dry-run`
+- [x] 13. App wiring and baseline summary (dry-run `--once`)
+  - [x] 13.1 Implement minimal `app.py` + `__main__.py` for `--once --dry-run`
     - Arg parse (`--dry-run`, `--once`); build the M1 dependencies (settings, DB, migrations, config
       load, registry + Shopify_Adapter, HTTP client, heartbeat registry); run one dry-run `--once` cycle
       that fetches/seeds each enabled feed and listing against fixtures or live, performs Baseline_Seeding
@@ -297,12 +297,12 @@ requirements as clearly-labelled Phase 2 / excluded work and have no tasks here.
       clean seeded first run.)
     - _Requirements: 19.12, 20.1, 20.4, 2.1, 2.3_
 
-  - [ ] 13.2 Implement the baseline summary log
+  - [x] 13.2 Implement the baseline summary log
     - On a dry-run `--once` run, log a per-feed and per-listing summary: products found, whether the
       subject was seeded (y/n), and alerts emitted (= 0 on a baseline run).
     - _Requirements: 2.1, 2.3, 17.12_
 
-  - [ ] 13.3 Write M1 end-to-end dry-run `--once` test
+  - [x] 13.3 Write M1 end-to-end dry-run `--once` test
     - `python -m restockradar --once --dry-run` runs end to end against fixtures, seeds state, emits zero
       alerts, prints the baseline summary, and exits 0.
     - _Requirements: 20.1, 20.4, 2.1, 21.4_
@@ -317,58 +317,58 @@ STOP: user review before M2
 
 ## Milestone 2 — Detection core (still dry-run)
 
-- [ ] 14. Repository layer and atomic write-set helper
-  - [ ] 14.1 Implement typed repository methods in `persistence/repository.py`
+- [x] 14. Repository layer and atomic write-set helper
+  - [x] 14.1 Implement typed repository methods in `persistence/repository.py`
     - Read helpers (stored listing/feed state, alert_state rows, enabled+healthy destinations for a
       game, backoff_state, incidents, due entities) and the single synchronous `BEGIN IMMEDIATE`
       write-set helper that writes stored state + alert_state (upsert ON CONFLICT) + alerts_outbox +
       alert_history + per-destination alert_deliveries together, running on the executor.
     - _Requirements: 6.1, 6.2, 6.3, 6.6, 6.7, 9.1_
 
-  - [ ] 14.2 Write property test: keyed upserts yield exactly one row per key
+  - [x] 14.2 Write property test: keyed upserts yield exactly one row per key
     - **Property 15: Keyed upserts yield exactly one row per key**
     - **Validates: Requirements 14.10, 14.12, 6.1**
 
-  - [ ] 14.3 Write property test: transaction rollback leaves no partial rows
+  - [x] 14.3 Write property test: transaction rollback leaves no partial rows
     - **Property 14: A transaction rollback leaves no partial rows**
     - **Validates: Requirements 6.3**
 
-  - [ ] 14.4 Write property test: outbox rows survive a restart
+  - [x] 14.4 Write property test: outbox rows survive a restart
     - **Property 12: Outbox rows survive a restart** (close/reopen DB; pending set identical).
     - **Validates: Requirements 6.5**
 
-  - [ ] 14.5 Write atomicity + restart durability example test
+  - [x] 14.5 Write atomicity + restart durability example test
     - Transition + alert_state + outbox + history + deliveries written atomically; undelivered
       deliveries survive a simulated restart.
     - _Requirements: 21.11, 14.21_
 
-- [ ] 15. Detection / new-product diffing
-  - [ ] 15.1 Implement `detect/events.py` and `detect/diff_feed.py`
+- [x] 15. Detection / new-product diffing
+  - [x] 15.1 Implement `detect/events.py` and `detect/diff_feed.py`
     - Event dataclasses; new-product detection vs seen_products keyed by (retailer,game,external_id),
       order-independent; keyword filtering; always record seen_products regardless of
       include/exclude/alert; tracked-listing suppression (match enabled listing by external_id OR handle
       → record seen_products but emit no new-product alert).
     - _Requirements: 3.1, 3.2, 3.3, 3.4, 3.5, 3.6, 12.7, 22.4_
 
-  - [ ] 15.2 Write property test: a new product yields exactly one new-product event
+  - [x] 15.2 Write property test: a new product yields exactly one new-product event
     - **Property 1: A new product yields exactly one new-product event**
     - **Validates: Requirements 3.1, 3.5, 3.6**
 
-  - [ ] 15.3 Write property test: feed processing is order-independent
+  - [x] 15.3 Write property test: feed processing is order-independent
     - **Property 2: Feed processing is order-independent**
     - **Validates: Requirements 3.2, 12.7**
 
-  - [ ] 15.4 Write property test: tracked-listing suppression records but emits no new-product alert
+  - [x] 15.4 Write property test: tracked-listing suppression records but emits no new-product alert
     - **Property 23: A product covered by a tracked listing is recorded but emits no new-product alert**
     - **Validates: Requirements 3.1, 3.5, 3.6**
 
-  - [ ] 15.5 Write new-product + two-games fixture tests
+  - [x] 15.5 Write new-product + two-games fixture tests
     - New product in a fixture → exactly one new-product alert; two feeds for different games on the
       same retailer each alert for the same External_Id.
     - _Requirements: 21.5, 21.28, 3.1, 14.6_
 
-- [ ] 16. Detection / listing diffing (restock + price + page-live + combined)
-  - [ ] 16.1 Implement `detect/diff_listing.py`
+- [x] 16. Detection / listing diffing (restock + price + page-live + combined)
+  - [x] 16.1 Implement `detect/diff_listing.py`
     - Restock transition logic with cooldown + restock_pending (pending set/clear/trailing/sellout);
       price-change via exact-Decimal vs last_alerted_price + cooldown; A→B→A flap suppression;
       page-live one-shot keyed on stored existence with 2-consecutive-404 flip, NOT_FOUND never writes
@@ -377,31 +377,31 @@ STOP: user review before M2
       300s with per-subject override.
     - _Requirements: 4.1, 4.2, 4.3, 4.4, 4.5, 4.6, 4.7, 4.9, 4.10, 5.1, 5.3, 5.5, 5.6, 7.3, 7.4, 7.5, 7.6, 7.8, 9.2, 9.3, 9.4, 9.5, 9.6, 9.7_
 
-  - [ ] 16.2 Write property test: no duplicate alert within the cooldown
+  - [x] 16.2 Write property test: no duplicate alert within the cooldown
     - **Property 6: No duplicate alert within the cooldown**
     - **Validates: Requirements 9.3, 9.7**
 
-  - [ ] 16.3 Write property test: deferred (restock_pending) trailing alert fires exactly once
+  - [x] 16.3 Write property test: deferred (restock_pending) trailing alert fires exactly once
     - **Property 7: The deferred (restock_pending) trailing alert fires exactly once**
     - **Validates: Requirements 4.3, 4.4, 4.5**
 
-  - [ ] 16.4 Write property test: A→B→A price flap within the cooldown yields no alert
+  - [x] 16.4 Write property test: A→B→A price flap within the cooldown yields no alert
     - **Property 8: An A→B→A price flap within the cooldown yields no alert**
     - **Validates: Requirements 9.5**
 
-  - [ ] 16.5 Write property test: restock → sell-out → restock yields two alerts
+  - [x] 16.5 Write property test: restock → sell-out → restock yields two alerts
     - **Property 9: Restock → sell-out → restock, both gaps beyond the cooldown, yields two alerts**
     - **Validates: Requirements 4.7**
 
-  - [ ] 16.6 Write property test: page going live produces exactly one alert and no stock/price alert
+  - [x] 16.6 Write property test: page going live produces exactly one alert and no stock/price alert
     - **Property 22: A page going live produces exactly one alert and no stock/price alert that poll**
     - **Validates: Requirements 7.3, 7.4, 7.5**
 
-  - [ ] 16.7 Write property test: existence flips to not-found only after two consecutive 404s
+  - [x] 16.7 Write property test: existence flips to not-found only after two consecutive 404s
     - **Property 20: Existence flips to not-found only after two consecutive 404s**
     - **Validates: Requirements 7.6**
 
-  - [ ] 16.9 Write restock/price/cooldown fixture tests
+  - [x] 16.9 Write restock/price/cooldown fixture tests
     - Variant unavailable→available ⇒ one restock, no repeat in cooldown; price change ⇒ one alert;
       trailing price-change fires once after cooldown; A→B→A flap no alert; restock→sellout→restock ⇒
       two alerts; flap within cooldown ⇒ no restock; restock within cooldown sets pending then fires
@@ -410,36 +410,36 @@ STOP: user review before M2
       its number intentionally left as a gap to avoid renumbering 16.9/16.10.)
     - _Requirements: 21.6, 21.7, 21.8, 21.9, 21.18, 21.25, 21.26_
 
-  - [ ] 16.10 Write page-live 404 fixture tests
+  - [x] 16.10 Write page-live 404 fixture tests
     - First-poll 404 stores existence false and a later transition produces exactly one Page_Live_Event;
       a single transient 404 on a previously-existing page stores no change and produces no event.
     - _Requirements: 21.19, 21.27, 7.3_
 
-- [ ] 17. Fan-out into the atomic write-set
-  - [ ] 17.1 Implement `detect/fanout.py` and wire detection to the write-set helper
+- [x] 17. Fan-out into the atomic write-set
+  - [x] 17.1 Implement `detect/fanout.py` and wire detection to the write-set helper
     - Resolve matching enabled + healthy non-admin destinations for the alert's game → one
       alert_deliveries row each inside the same transaction as the state change; combined/single alert
       payloads; integrate diff_feed/diff_listing output with the repository write-set from task 14.
     - _Requirements: 6.1, 6.2, 8.1, 10.10_
 
-  - [ ] 17.2 Write property test: fan-out writes one delivery row per matching enabled, healthy destination
+  - [x] 17.2 Write property test: fan-out writes one delivery row per matching enabled, healthy destination
     - **Property 10: Fan-out writes one delivery row per matching enabled, healthy destination**
     - **Validates: Requirements 6.2, 8.1, 10.10**
 
-- [ ] 18. Backoff state machine
-  - [ ] 18.1 Implement `watcher/backoff.py` and `watcher/due.py`
+- [x] 18. Backoff state machine
+  - [x] 18.1 Implement `watcher/backoff.py` and `watcher/due.py`
     - Ordinary vs Blocked exponential backoff starting at the entity poll interval, doubling, capped at
       1h, honouring Retry-After for Blocked; per retailer/feed/listing counters; reset on success;
       effective-due = max(next_due_at, backoff_until) for feeds/listings and backoff_until alone for a
       retailer.
     - _Requirements: 1.8, 16.5, 16.6, 16.7_
 
-  - [ ] 18.2 Write property test: backoff grows monotonically to the cap and resets on success
+  - [x] 18.2 Write property test: backoff grows monotonically to the cap and resets on success
     - **Property 21: Backoff grows monotonically to the cap and resets on success**
     - **Validates: Requirements 16.5, 16.6, 16.7**
 
-- [ ] 19. Watcher core and scheduler
-  - [ ] 19.1 Implement `watcher/core.py` per-retailer tick
+- [x] 19. Watcher core and scheduler
+  - [x] 19.1 Implement `watcher/core.py` per-retailer tick
     - Read retailer backoff_state and defer the whole job on retailer-wide backoff; select enabled due
       feeds+listings ordered by effective due time ascending, feeds before listings; process
       sequentially under a 5-minute per-poll cap; fetch → BEGIN IMMEDIATE → read → diff → write → commit;
@@ -448,7 +448,7 @@ STOP: user review before M2
       failures in backoff_state and emit no transition.
     - _Requirements: 1.1, 1.3, 1.6, 1.7, 2.1, 2.2, 2.3, 2.4, 3.7, 3.8, 4.8, 4.11, 5.4, 5.7, 6.6, 6.7, 7.7, 7.9, 15.1, 15.3_
 
-  - [ ] 19.2 Implement the watcher-level handle-rename WRITE path
+  - [x] 19.2 Implement the watcher-level handle-rename WRITE path
     - When the adapter reports a rename (`resolved_handle` / `resolved_url` set), the watcher — inside its
       own `BEGIN IMMEDIATE` transaction — updates the listing's `url` + `handle`, treats the listing as
       EXISTING, does NOT increment `consecutive_404` and emits NO Page_Live_Event, and queues the
@@ -457,26 +457,26 @@ STOP: user review before M2
       url/handle change and queues NO notice.
     - _Requirements: 11.8, 7.7_
 
-  - [ ] 19.3 Implement `watcher/scheduler.py`
+  - [x] 19.3 Implement `watcher/scheduler.py`
     - AsyncIOScheduler: exactly one job per retailer ticking at fixed `tick_s`, `coalesce=True`,
       `max_instances=1`, staggered initial ticks; plus one independent interval job (every `tick_s`)
       that beats the scheduler heartbeat regardless of any retailer job.
     - _Requirements: 1.5, 1.9, 1.10, 19.7_
 
-  - [ ] 19.4 Write property test: existence flip and handle-rename write path (watcher-level)
+  - [x] 19.4 Write property test: existence flip and handle-rename write path (watcher-level)
     - When the adapter reports `resolved_handle`/`resolved_url`, the watcher transaction updates the
       listing url+handle, keeps existence EXISTING with no Page_Live_Event, and queues exactly one
       `retailer:<id>` admin notice; when NO resolved field is set (equal handle), NO url/handle change
       and NO notice are written.
     - _Requirements: 11.8, 7.7_
 
-  - [ ] 19.5 Write scheduler/due-selection unit tests
+  - [x] 19.5 Write scheduler/due-selection unit tests
     - Retailer-wide backoff defers the whole job; due-ascending ordering with feeds-before-listings;
       per-entity next_due_at set on finish; poll-interval floor applied; staggered startup ticks; missed
       ticks coalesce.
     - _Requirements: 1.5, 1.6, 1.7, 1.9, 1.10, 15.2_
 
-- [ ] 20. Checkpoint — core detection pipeline (dry-run `--once`)
+- [x] 20. Checkpoint — core detection pipeline (dry-run `--once`)
   - Ensure all tests pass, ask the user if questions arise. Confirm a dry-run `--once` over fixtures
     exercises detection and writes outbox rows (no real POSTs).
 

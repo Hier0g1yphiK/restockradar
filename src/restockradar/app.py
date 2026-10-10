@@ -80,15 +80,18 @@ from restockradar.persistence.repository import (
     seed_listing,
 )
 from restockradar.settings import Settings
+from restockradar.watcher.core import TickResult, WatcherCore
 
 __all__ = [
     "BaselineSummary",
+    "DetectSummary",
     "FeedResult",
     "ListingResult",
     "build_arg_parser",
     "load_config_from_path",
     "register_shopify",
     "run",
+    "run_once_detect",
     "run_once_dry_run",
     "write_summary",
 ]
@@ -395,6 +398,73 @@ async def run_once_dry_run(
     return summary
 
 
+# ---------------------------------------------------------------------------
+# The one M2 detection cycle (task 20 — the M2 --once --dry-run deliverable)
+# ---------------------------------------------------------------------------
+
+
+@dataclass(frozen=True, slots=True)
+class DetectSummary:
+    """The aggregate of one M2 detection pass over every enabled retailer (task 20).
+
+    Folds the per-retailer :class:`~restockradar.watcher.core.TickResult`s of a single
+    :func:`run_once_detect` pass into the headline counts: how many feeds / listings were
+    polled across all retailers and how many of those polls FAILED (recorded as backoff,
+    Req 16). Detection WRITES any produced ``alerts_outbox`` / ``alert_deliveries`` rows
+    durably as a side effect of the pass; this record just describes the shape of what ran.
+    """
+
+    retailers: int = 0
+    feeds_polled: int = 0
+    listings_polled: int = 0
+    failures: int = 0
+
+
+async def run_once_detect(
+    db: Database,
+    registry: AdapterRegistry,
+    *,
+    heartbeat: HeartbeatRegistry,
+    now: datetime | None = None,
+) -> DetectSummary:
+    """Run ONE M2 detection pass over every enabled retailer and return its shape (task 20).
+
+    Drives the real M2 pipeline — :meth:`~restockradar.watcher.core.WatcherCore.tick_retailer`
+    with ``ignore_due=True`` — once per enabled retailer, so every enabled feed and listing
+    is polled exactly once this cycle REGARDLESS of ``next_due_at`` or backoff (``--once``
+    ignores due/backoff for enabled entities, Req 20.4). Each poll fetches through the
+    shared HTTP client (robots.txt + per-host spacing still enforced), diffs the fetched
+    state against the stored baseline, and — for an already-seeded subject whose state
+    changed — fans the transition out into ``alerts_outbox`` + one ``alert_deliveries`` row
+    per enabled, healthy, non-admin destination for the alert's game, all written durably
+    in the single-writer executor transaction (Req 3-7). No webhook POST is issued here —
+    dispatch is M3 — so this is dry-run-safe by construction.
+
+    ``db`` / ``registry`` / ``heartbeat`` are injected so the pass is drivable fully
+    offline from saved fixtures (the no-network guard enforces that in the suite). The
+    retailer order mirrors the baseline cycle (enabled retailers by id) for a
+    deterministic one-shot pass.
+    """
+    cycle_now = now or datetime.now(UTC)
+    core = WatcherCore(
+        db=db,
+        registry=registry,
+        heartbeat=heartbeat,
+        clock=lambda: cycle_now,
+    )
+    summary = DetectSummary()
+    retailers = await db.run(_read_retailers)
+    for retailer in retailers:
+        result: TickResult = await core.tick_retailer(retailer.id, ignore_due=True)
+        summary = DetectSummary(
+            retailers=summary.retailers + 1,
+            feeds_polled=summary.feeds_polled + result.feeds_polled,
+            listings_polled=summary.listings_polled + result.listings_polled,
+            failures=summary.failures + result.failures,
+        )
+    return summary
+
+
 async def _process_feed(
     db: Database,
     adapter: Adapter,
@@ -662,11 +732,29 @@ async def _run_cycle_and_log(
     db: Database,
     http: HttpClient,
     registry: AdapterRegistry,
+    heartbeat: HeartbeatRegistry,
     stream: TextIO,
 ) -> None:
-    """Run the baseline cycle and write the summary (shared by the CLI path)."""
+    """Run the baseline-seed + M2 detection cycles and write the summary (CLI path).
+
+    First runs the Baseline_Seeding cycle so any first-ever subject is seeded silently
+    (no alert, Req 2.1-2.3), then runs the M2 detection cycle (:func:`run_once_detect`)
+    so an already-seeded subject whose fetched state has CHANGED produces its transition
+    into ``alerts_outbox`` / ``alert_deliveries`` durably (Req 3-7). Both run under
+    ``--once --dry-run``: no webhook POST is issued (dispatch is M3) and no webhook URL is
+    ever printed. The baseline summary is written to ``stream``; the detection pass's
+    shape is appended as one line.
+    """
     summary = await run_once_dry_run(db, http, registry)
     write_summary(summary, stream)
+    detect = await run_once_detect(db, registry, heartbeat=heartbeat)
+    print(
+        f"detect: {detect.retailers} retailers polled, "
+        f"{detect.feeds_polled} feeds polled, "
+        f"{detect.listings_polled} listings polled, "
+        f"{detect.failures} failures",
+        file=stream,
+    )
 
 
 async def run(
@@ -698,17 +786,17 @@ async def run(
 
     if not once:
         print(
-            "M1 only supports --once --dry-run; continuous scheduling arrives in a "
-            "later milestone. Re-run with: python -m restockradar --once --dry-run",
+            "This build only supports --once --dry-run; continuous scheduling arrives "
+            "in a later milestone. Re-run with: python -m restockradar --once --dry-run",
             file=out,
         )
         return 0
     if not dry_run:
-        # M1 only implements the dry-run baseline cycle; a non-dry-run --once (live
+        # Only the dry-run --once path is wired; a non-dry-run --once (live webhook
         # delivery) is M3+ work. Be honest rather than pretend to deliver.
         print(
-            "M1 only supports --once --dry-run; live delivery arrives in a later "
-            "milestone. Re-run with: python -m restockradar --once --dry-run",
+            "This build only supports --once --dry-run; live delivery arrives in a "
+            "later milestone. Re-run with: python -m restockradar --once --dry-run",
             file=out,
         )
         return 0
@@ -726,7 +814,7 @@ async def run(
         registry = AdapterRegistry()
         register_shopify(registry, http)
         await load_config_from_path(db, settings.config_path, registry=registry)
-        await _run_cycle_and_log(db, http, registry, out)
+        await _run_cycle_and_log(db, http, registry, heartbeat, out)
         await db.wal_checkpoint_truncate()
     finally:
         await http.aclose()

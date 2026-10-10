@@ -1,4 +1,4 @@
-# Python
+﻿# Python
 __pycache__/
 *.py[cod]
 *.egg-info/
@@ -22,3 +22,5 @@ venv/
 *.sqlite-wal
 *.sqlite-shm
 *.db
+*.db-wal
+*.db-shm
